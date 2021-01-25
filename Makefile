@@ -38,6 +38,9 @@ define Package/wg-installer-server/install
 
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
 	$(CP) ./wg-server/config/wginstaller.json $(1)/usr/share/rpcd/acl.d/
+
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./wg-server/config/wgserver.conf $(1)/etc/config/wgserver
 endef
 
 define Package/wg-installer-server/postinst
