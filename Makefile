@@ -30,13 +30,13 @@ endef
 
 define Package/wg-installer-server/install
 	$(INSTALL_DIR) $(1)/usr/share/wginstaller/
-	$(INSTALL_BIN) ./wg-sever/lib/install_wginstaller_user.sh $(1)/usr/share/wginstaller/install_wginstaller_user.sh
+	$(INSTALL_BIN) ./wg-server/lib/install_wginstaller_user.sh $(1)/usr/share/wginstaller/install_wginstaller_user.sh
 
 	$(INSTALL_DIR) $(1)/usr/libexec/rpcd/
-	$(INSTALL_BIN) ./wg-sever/wginstaller.sh $(1)/usr/libexec/rpcd/wginstaller
+	$(INSTALL_BIN) ./wg-server/wginstaller.sh $(1)/usr/libexec/rpcd/wginstaller
 
 	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
-	$(CP) ./wg-sever/config/wginstaller.json $(1)/usr/share/rpcd/acl.d/
+	$(CP) ./wg-server/config/wginstaller.json $(1)/usr/share/rpcd/acl.d/
 endef
 
 define Package/wg-installer-server/postinst
