@@ -34,12 +34,16 @@ function wg_register {
 	base_prefix=$(uci get wgserver.@server[0].base_prefix)
 
 	# create wg tunnel
-	ip link add dev $ifname type wireguard
-	wg set $ifname listen-port $port private-key /root/wgserver.key peer $public_key allowed-ips ::/0
-	ip -6 a a  $BASE_PREIFX_NEXT_PORT_NUM_ALS_IP dev $ifname
-	ip -6 a a fe80::1/64 dev $ifname
-	ip link set up dev $ifname
-	
+	#ip link add dev $ifname type wireguard
+	#wg set $ifname listen-port $port private-key /root/wgserver.key peer $public_key allowed-ips ::/0
+	#ip -6 a a  $BASE_PREIFX_NEXT_PORT_NUM_ALS_IP dev $ifname
+	#ip -6 a a fe80::1/64 dev $ifname
+	#ip link set up dev $ifname	
+
+	#uci add network wireguard_wg0
+	#uci set network.@wireguard_wg0[-1].public_key=$2
+	#uci add_list network.@wireguard_wg0[-1].allowed_ips="::/0"
+
 	# reload babel
 	/etc/init.d/babeld reload
 }
