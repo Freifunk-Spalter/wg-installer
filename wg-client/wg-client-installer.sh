@@ -45,7 +45,7 @@ token="$(request_token $IP $USER $PASSWORD)"
 
 # now call procedure 
 case $CMD in
-  "get_usage") install_route $token $IP;;
-  "delete") delete_route $token $IP $BANDWIDTH $PUBKEY ;;
+  "get_usage") wg_get_usage $token $IP;;
+  "register") wg_register $token $IP $BANDWIDTH $PUBKEY ;;
    *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac
