@@ -49,7 +49,7 @@ endef
 define Package/wg-installer-client
 	$(call Package/wg-installer/Default)
 	TITLE+= (client)
-	DEPENDS:=+coreutils-fold +owipcalc +curl
+	DEPENDS:=+curl
 endef
 
 define Package/wg-installer-client/install
