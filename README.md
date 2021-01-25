@@ -1,4 +1,4 @@
-## Wireguard Installer
+## [WIP] Wireguard Installer
 
 This tool can be used to automatically create wireguard tunnels. Using rpcd a new wieguard interface is created on the server where the client can connect to.
 
