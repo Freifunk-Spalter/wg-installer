@@ -24,3 +24,8 @@ Get Usage Statistics
 Register Tunnel Interface
 
     wg-client-installer register --ip 127.0.0.1 --user wginstaller --password wginstaller --bandwidth 10 --pubkey xyz
+
+## ToDo
+
+- [ ] Enable SSL again (somehow the ssl lib is ignoring everything)
+- [ ] DDOS Protection
