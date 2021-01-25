@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/share/libubox/jshn.sh
+. /usr/share/wginstaller/wg_functions.sh
 
 case "$1" in
 	list)
@@ -13,7 +14,7 @@ case "$1" in
 			get_usage)
 				read input;
 				logger -t "wginstaller" "call" "$2" "$input"
-				# ToDo: usage statistics for clients
+				wg_get_usage
 			;;
 			register)
 				read input;

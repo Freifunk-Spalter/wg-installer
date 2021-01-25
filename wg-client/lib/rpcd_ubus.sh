@@ -45,7 +45,7 @@ function request_token {
   echo $ubus_rpc_session
 }
 
-function wg_get_usage {
+function wg_rpcd_get_usage {
   local token=$1
   local ip=$2
   local secret=$3
@@ -62,10 +62,17 @@ function wg_get_usage {
   json_close_object
   json_close_array
   req=$(json_dump)
-  curl http://$ip/ubus -d "$req"
+  ret=$(curl http://$ip/ubus -d "$req") 2> /dev/null
+  # return values
+  json_load "$ret"
+  json_get_vars result result
+  json_select result
+  json_select 2
+  json_get_var num_interfaces num_interfaces
+  echo "num_interfaces: ${num_interfaces}"
 }
 
-function wg_register {
+function wg_rpcd_register {
   local token=$1
   local ip=$2
   local uplink_bw=$3
