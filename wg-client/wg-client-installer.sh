@@ -47,5 +47,5 @@ token="$(request_token $IP $USER $PASSWORD)"
 case $CMD in
   "get_usage") install_route $token $IP;;
   "delete") delete_route $token $IP $BANDWIDTH $PUBKEY ;;
-   *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;
+   *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac
