@@ -36,7 +36,7 @@ function request_token {
   json_close_object
   json_close_array
   req=$(json_dump)
-  ret=$(curl http://$ip/ubus -d "$req") 2> /dev/null
+  ret=$(curl --insecure https://$ip/ubus -d "$req") 2> /dev/null
   json_load "$ret"
   json_get_vars result result
   json_select result
@@ -62,7 +62,7 @@ function wg_rpcd_get_usage {
   json_close_object
   json_close_array
   req=$(json_dump)
-  ret=$(curl http://$ip/ubus -d "$req") 2> /dev/null
+  ret=$(curl --insecure https://$ip/ubus -d "$req") 2> /dev/null
   # return values
   json_load "$ret"
   json_get_vars result result
