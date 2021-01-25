@@ -19,7 +19,12 @@ case "$1" in
 			register)
 				read input;
 				logger -t "wginstaller" "call" "$2" "$input"
-				# ToDo: register wireguard instance
+
+				json_load "$input"
+  				json_get_var uplink_bw uplink_bw
+				json_get_var public_key public_key
+
+				wg_register $uplink_bw $public_key
 			;;
 		esac
 	;;
