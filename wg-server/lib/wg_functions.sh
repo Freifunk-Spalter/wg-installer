@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/share/libubox/jshn.sh
+. /usr/share/wginstaller/wg.sh
 
 function wg_get_usage {
     num_interfaces = $(wg show interfaces | wc -w)
@@ -9,49 +10,21 @@ function wg_get_usage {
     echo $(json_dump)
 }
 
-function next_port {
-	ports=$(wg show all listen-port | awk '{print $2}')
-
-	# assume for now only 1 value @[0]
-	port_start=$(uci get wgserver.@server[0].port_start)
-	port_end=$(uci get wgserver.@server[0].port_end)
-
-	for i in $(seq $port_start $port_end)
-	do
-		if ! echo $ports|grep -q "$i";
-		then
-			echo $i
-			return
-		fi
-	done
-}
-
 function wg_register {
 	local uplink_bw=$1
 	local mtu=$2
 	local public_key=$3
 
-	port=$(next_port)
-	ifname="wg_$port"
 	base_prefix=$(uci get wgserver.@server[0].base_prefix)
-	#delegate_prefix=$(uci get wgserver.@server[0].delegate_prefix)
 	port_start=$(uci get wgserver.@server[0].port_start)
+	port_end=$(uci get wgserver.@server[0].port_end)
+
+	port=$(next_port $port_start $port_end)
+	ifname="wg_$port"
 
 	offset=$(($port-$port_start))
-	#addbase=$(($offset * $delegate_prefix))
-	addbase=$(($offset * 2 - 1))
-	gw_ip=$(owipcalc $base_prefix add $addbase next 128) # gateway ip
-	client_ip=$(owipcalc $gw_ip next 128) # client ip
+	gw_ip=$(owipcalc $base_prefix add $offset next 128) # gateway ip
 	gw_ip_assign="${gw_ip}/128"
-	client_ip_assign="${client_ip}/128"
-
-
-	#gw_ip=$base_prefix
-	#for i in $(seq $offset);
-	#do  
-   	#	gw_ip=$(owipcalc $gw_ip next $delegate_prefix)
-	#done
-	#gw_ip_assign=$(owipcalc $gw_ip add 1)
 
 	gw_key=$(uci get wgserver.@server[0].wg_key)
 	gw_pub=$(uci get wgserver.@server[0].wg_pub)
@@ -70,7 +43,6 @@ function wg_register {
 	json_add_string "pubkey" $wg_server_pubkey
 	json_add_string "gw_ip" $gw_ip_assign
 	json_add_int "port" $port
-	json_add_string "client_ip" $client_ip_assign
 
 	# reload babel
 	/etc/init.d/babeld reload

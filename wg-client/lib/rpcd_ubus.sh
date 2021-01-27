@@ -102,9 +102,9 @@ function wg_rpcd_register {
   json_get_var pubkey pubkey
   json_get_var gw_ip gw_ip
   json_get_var port port
-  json_get_var client_ip client_ip
+  #json_get_var client_ip client_ip
   echo "pubkey: ${pubkey}"
   echo "gw_ip: ${gw_ip}"
   echo "port: ${port}"
-  echo "client_ip: ${client_ip}"
+  #echo "client_ip: ${client_ip}"
 }

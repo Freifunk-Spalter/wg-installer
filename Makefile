@@ -32,6 +32,7 @@ define Package/wg-installer-server/install
 	$(INSTALL_DIR) $(1)/usr/share/wginstaller/
 	$(INSTALL_BIN) ./wg-server/lib/install_wginstaller_user.sh $(1)/usr/share/wginstaller/install_wginstaller_user.sh
 	$(INSTALL_BIN) ./wg-server/lib/wg_functions.sh $(1)/usr/share/wginstaller/wg_functions.sh
+	$(INSTALL_BIN) ./common/wg.sh $(1)/usr/share/wginstaller/wg.sh
 
 	$(INSTALL_DIR) $(1)/usr/libexec/rpcd/
 	$(INSTALL_BIN) ./wg-server/wginstaller.sh $(1)/usr/libexec/rpcd/wginstaller
@@ -59,6 +60,7 @@ endef
 define Package/wg-installer-client/install
 	$(INSTALL_DIR) $(1)/usr/share/wginstaller/
 	$(INSTALL_BIN) ./wg-client/lib/rpcd_ubus.sh $(1)/usr/share/wginstaller/rpcd_ubus.sh
+	$(INSTALL_BIN) ./common/wg.sh $(1)/usr/share/wginstaller/wg.sh
 
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./wg-client/wg-client-installer.sh $(1)/usr/bin/wg-client-installer

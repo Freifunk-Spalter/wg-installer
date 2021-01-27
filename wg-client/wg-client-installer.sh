@@ -1,6 +1,7 @@
 #!/bin/sh
 
 . /usr/share/wginstaller/rpcd_ubus.sh
+. /usr/share/wginstaller/wg.sh
 
 CMD=$1
 shift
@@ -57,28 +58,40 @@ function escape_ip {
 function register_client_interface {
   local pubkey=$1
   local gw_ip=$2
-  local port=$3
+  local gw_port=$3
   local endpoint=$4
-  local client_ip=$5
+  #local client_ip=$5
 
   gw_key=$(uci get wgclient.@client[0].wg_key)
   interface_name="gw_$(escape_ip $endpoint)"
 
+  port_start=$(uci get wgclient.@client[0].port_start)
+  port_end=$(uci get wgclient.@client[0].port_end)
+  base_prefix=$(uci get wgclient.@client[0].base_prefix)
+
+  port=$(next_port $port_start $port_end)
+	ifname="wg_$port"
+	
+	offset=$(($port-$port_start))
+	client_ip=$(owipcalc $base_prefix add $offset next 128) # gateway ip
+  echo owipcalc $base_prefix add $offset next 128
+	client_ip_assign="${client_ip}/128"
+
   # use the 2 as interface ip
   echo "Installing Interface With:"
   echo "Endpoint ${endpoint}"
-  echo "gw_ip" ${gw_ip}
+  #echo "gw_ip" ${gw_ip}
   echo "client_ip ${client_ip}"
   echo "port ${port}"
   echo "pubkey ${pubkey}"
 
-  ip link add dev $interface_name type wireguard
+  ip link add dev $ifname type wireguard
   
   # todo check if ipv6
-  ip -6 a a dev $interface_name $client_ip
-  wg set $interface_name listen-port $port private-key $gw_key peer $pubkey allowed-ips ::/0 endpoint "${endpoint}:${port}"
-  ip link set up dev $interface_name
-  ip link set mtu 1372 dev $interface_name # configure mtu here!
+  ip -6 a a dev $ifname $client_ip
+  wg set $ifname listen-port $port private-key $gw_key peer $pubkey allowed-ips ::/0 endpoint "${endpoint}:${gw_port}"
+  ip link set up dev $ifname
+  ip link set mtu 1372 dev $ifname # configure mtu here!
 }
 
 # rpc login
@@ -98,7 +111,7 @@ case $CMD in
     ip_addr=$(echo $register_output | awk '{print $4}')
     port=$(echo $register_output | awk '{print $6}')
     client_ip=$(echo $register_output | awk '{print $8}')
-    register_client_interface $pubkey $ip_addr $port $IP $client_ip
+    register_client_interface $pubkey $ip_addr $port $IP # $client_ip
     ;;
    *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac
