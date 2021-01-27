@@ -45,6 +45,7 @@ function wg_register {
 	do  
    		gw_ip=$(owipcalc $gw_ip next $delegate_prefix)
 	done
+	gw_ip_assign=$(owipcalc $gw_ip add 1)
 
 	gw_key=$(uci get wgserver.@server[0].wg_key)
 	gw_pub=$(uci get wgserver.@server[0].wg_pub)
@@ -53,7 +54,7 @@ function wg_register {
 	# create wg tunnel
 	ip link add dev $ifname type wireguard
 	wg set $ifname listen-port $port private-key $gw_key peer $public_key allowed-ips ::0/0
-	ip -6 a a  $gw_ip dev $ifname
+	ip -6 a a  $gw_ip_assign dev $ifname
 	ip -6 a a fe80::1/64 dev $ifname
 	ip link set up dev $ifname
 	ip link set mtu $mtu dev $ifname
