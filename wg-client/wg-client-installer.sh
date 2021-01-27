@@ -60,11 +60,9 @@ function register_client_interface {
   local gw_ip=$2
   local gw_port=$3
   local endpoint=$4
-  #local client_ip=$5
 
   gw_key=$(uci get wgclient.@client[0].wg_key)
   interface_name="gw_$(escape_ip $endpoint)"
-
   port_start=$(uci get wgclient.@client[0].port_start)
   port_end=$(uci get wgclient.@client[0].port_end)
   base_prefix=$(uci get wgclient.@client[0].base_prefix)
@@ -73,14 +71,12 @@ function register_client_interface {
 	ifname="wg_$port"
 	
 	offset=$(($port-$port_start))
-	client_ip=$(owipcalc $base_prefix add $offset next 128) # gateway ip
-  echo owipcalc $base_prefix add $offset next 128
+	client_ip=$(owipcalc $base_prefix add $offset next 128)
 	client_ip_assign="${client_ip}/128"
 
   # use the 2 as interface ip
   echo "Installing Interface With:"
   echo "Endpoint ${endpoint}"
-  #echo "gw_ip" ${gw_ip}
   echo "client_ip ${client_ip}"
   echo "port ${port}"
   echo "pubkey ${pubkey}"
@@ -111,7 +107,7 @@ case $CMD in
     ip_addr=$(echo $register_output | awk '{print $4}')
     port=$(echo $register_output | awk '{print $6}')
     client_ip=$(echo $register_output | awk '{print $8}')
-    register_client_interface $pubkey $ip_addr $port $IP # $client_ip
+    register_client_interface $pubkey $ip_addr $port $IP
     ;;
    *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac
