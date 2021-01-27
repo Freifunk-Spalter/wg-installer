@@ -27,10 +27,6 @@ while true ; do
       BANDWIDTH=$2
       shift 2
       ;;
-    --pubkey)
-      PUBKEY=$2
-      shift 2
-      ;;
     --mtu)
       WG_MTU=$2
       shift 2
@@ -50,6 +46,8 @@ function register_client_interface {
   local port=$3
   local endpoint=$4
 
+  gw_key=$(uci get wgclient.@client[0].wg_key)
+  
   # use the 2 as interface ip
   client_ip=$(owipcalc $ip_addr add 1)
   echo "Installing Interface With:"
@@ -62,7 +60,7 @@ function register_client_interface {
   
   # todo check if ipv6
   ip -6 a a dev wg0 $client_ip
-  wg set wg0 listen-port $port private-key /root/wg.key peer $pubkey allowed-ips ::1 endpoint "${endpoint}:${port}"
+  wg set wg0 listen-port $port private-key $gw_key peer $pubkey allowed-ips ::/0 endpoint "${endpoint}:${port}"
   ip link set up dev wg0
   ip link set mtu 1372 dev wg0
 }
@@ -73,10 +71,13 @@ token="$(request_token $IP $USER $PASSWORD)"
 # now call procedure 
 case $CMD in
   "get_usage")
+    pubkey
     wg_rpcd_get_usage $token $IP
     ;;
-  "register") 
-    register_output=$(wg_rpcd_register $token $IP $BANDWIDTH $WG_MTU $PUBKEY)
+  "register")
+  	gw_pub=$(uci get wgclient.@client[0].wg_pub)
+    gw_pub_string=$(cat $gw_pub)
+    register_output=$(wg_rpcd_register $token $IP $BANDWIDTH $WG_MTU $gw_pub_string)
     pubkey=$(echo $register_output | grep pubkey | awk '{print $2}')
     ip_addr=$(echo $register_output | grep ip_addr | awk '{print $4}')
     port=$(echo $register_output | grep port | awk '{print $6}')
