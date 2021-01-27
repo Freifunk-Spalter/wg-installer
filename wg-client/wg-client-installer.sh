@@ -56,17 +56,18 @@ function escape_ip {
 
 function register_client_interface {
   local pubkey=$1
-  local ip_addr=$2
+  local gw_ip=$2
   local port=$3
   local endpoint=$4
+  local client_ip=$5
 
   gw_key=$(uci get wgclient.@client[0].wg_key)
   interface_name="gw_$(escape_ip $endpoint)"
 
   # use the 2 as interface ip
-  client_ip=$(owipcalc $ip_addr add 2)
   echo "Installing Interface With:"
   echo "Endpoint ${endpoint}"
+  echo "gw_ip" ${gw_ip}
   echo "client_ip ${client_ip}"
   echo "port ${port}"
   echo "pubkey ${pubkey}"
@@ -93,10 +94,11 @@ case $CMD in
   	gw_pub=$(uci get wgclient.@client[0].wg_pub)
     gw_pub_string=$(cat $gw_pub)
     register_output=$(wg_rpcd_register $token $IP $BANDWIDTH $WG_MTU $gw_pub_string)
-    pubkey=$(echo $register_output | grep pubkey | awk '{print $2}')
-    ip_addr=$(echo $register_output | grep ip_addr | awk '{print $4}')
-    port=$(echo $register_output | grep port | awk '{print $6}')
-    register_client_interface $pubkey $ip_addr $port $IP
+    pubkey=$(echo $register_output | awk '{print $2}')
+    ip_addr=$(echo $register_output | awk '{print $4}')
+    port=$(echo $register_output | awk '{print $6}')
+    client_ip=$(echo $register_output | awk '{print $8}')
+    register_client_interface $pubkey $ip_addr $port $IP $client_ip
     ;;
    *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac
