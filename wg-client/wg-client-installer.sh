@@ -49,7 +49,7 @@ function register_client_interface {
   gw_key=$(uci get wgclient.@client[0].wg_key)
   
   # use the 2 as interface ip
-  client_ip=$(owipcalc $ip_addr add 1)
+  client_ip=$(owipcalc $ip_addr add 2)
   echo "Installing Interface With:"
   echo "Endpoint ${endpoint}"
   echo "client_ip ${client_ip}"
