@@ -30,6 +30,7 @@ while true ; do
     --pubkey)
       PUBKEY=$2
       shift 2
+      ;;
     --mtu)
       WG_MTU=$2
       shift 2

@@ -50,7 +50,8 @@ function wg_register {
 	# craft return address
 	json_init
 	json_add_string "pubkey" $wg_server_pubkey
-	json_add_string "endpoint" "${gw_ip}:${port}"
+	json_add_string "endpoint" $gw_ip
+	json_add_int "port" $port
 
 	# reload babel
 	/etc/init.d/babeld reload

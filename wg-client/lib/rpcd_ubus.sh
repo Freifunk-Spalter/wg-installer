@@ -94,5 +94,15 @@ function wg_rpcd_register {
   json_close_object
   json_close_array
   req=$(json_dump)
-  curl --insecure https://$ip/ubus -d "$req" 2> /dev/null
+  ret=$(curl --insecure https://$ip/ubus -d "$req" 2> /dev/null) 2> /dev/null
+  json_load "$ret"
+  json_get_vars result result
+  json_select result
+  json_select 2
+  json_get_var pubkey pubkey
+  json_get_var endpoint endpoint
+  json_get_var port port
+  echo "pubkey: ${pubkey}"
+  echo "endpoint: ${endpoint}"
+  echo "port: ${port}"
 }
