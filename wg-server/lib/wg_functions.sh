@@ -34,10 +34,11 @@ function wg_register {
 	port=$(next_port)
 	ifname="wg_$port"
 	base_prefix=$(uci get wgserver.@server[0].base_prefix)
+	delegate_prefix=$(uci get wgserver.@server[0].delegate_prefix)
 
 	port_start=$(uci get wgserver.@server[0].port_start)
 	offset=$(($port-$port_start))
-	addbase=$(($offset * 64)) # todo make that configurable
+	addbase=$(($offset * $delegate_prefix))
 	gw_ip=$(owipcalc $base_prefix add $addbase)
 
 	gw_key=$(uci get wgserver.@server[0].wg_key)
