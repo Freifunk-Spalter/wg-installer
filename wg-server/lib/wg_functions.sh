@@ -41,7 +41,7 @@ function wg_register {
 
 	# create wg tunnel
 	ip link add dev $ifname type wireguard
-	wg set $ifname listen-port $port private-key $gw_key peer $public_key allowed-ips 0.0.0.0/0
+	wg set $ifname listen-port $port private-key $gw_key peer $public_key allowed-ips ::0/0
 	ip -6 a a  $gw_ip dev $ifname
 	ip -6 a a fe80::1/64 dev $ifname
 	ip link set up dev $ifname
