@@ -27,23 +27,33 @@ function next_port {
 }
 
 function wg_register {
-	uplink_bw=$1
-	public_key=$2
+	local uplink_bw=$1
+	local mtu=$2
+	local public_key=$3
+
 	port=$(next_port)
 	ifname="wg_$port"
 	base_prefix=$(uci get wgserver.@server[0].base_prefix)
+	gw_ip=$(owipcalc $base_prefix add $port)
+	gw_key=$(uci get wgserver.@server[0].wg_key)
+	gw_pub=$(uci get wgserver.@server[0].wg_pub)
+	wg_server_pubkey=$(cat $gw_pub)
 
 	# create wg tunnel
-	#ip link add dev $ifname type wireguard
-	#wg set $ifname listen-port $port private-key /root/wgserver.key peer $public_key allowed-ips ::/0
-	#ip -6 a a  $BASE_PREIFX_NEXT_PORT_NUM_ALS_IP dev $ifname
-	#ip -6 a a fe80::1/64 dev $ifname
-	#ip link set up dev $ifname	
+	ip link add dev $ifname type wireguard
+	wg set $ifname listen-port $port private-key $gw_key peer $public_key allowed-ips ::/0
+	ip -6 a a  $gw_ip dev $ifname
+	ip -6 a a fe80::1/64 dev $ifname
+	ip link set up dev $ifname
+	ip link set mtu $mtu dev $ifname
 
-	#uci add network wireguard_wg0
-	#uci set network.@wireguard_wg0[-1].public_key=$2
-	#uci add_list network.@wireguard_wg0[-1].allowed_ips="::/0"
+	# craft return address
+	json_init
+	json_add_string "pubkey" $wg_server_pubkey
+	json_add_string "endpoint" "${gw_ip}:${port}"
 
 	# reload babel
 	/etc/init.d/babeld reload
+
+	echo $(json_dump)
 }

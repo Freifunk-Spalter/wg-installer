@@ -25,7 +25,7 @@ endef
 define Package/wg-installer-server
 	$(call Package/wg-installer/Default)
 	TITLE+= (server)
-	DEPENDS:=+rpcd +uhttpd +uhttpd-mod-ubus
+	DEPENDS:=+rpcd +uhttpd +uhttpd-mod-ubus +owipcalc
 endef
 
 define Package/wg-installer-server/install

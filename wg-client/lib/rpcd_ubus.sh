@@ -76,7 +76,8 @@ function wg_rpcd_register {
   local token=$1
   local ip=$2
   local uplink_bw=$3
-  local public_key=$4
+  local mtu=$4
+  local public_key=$5
 
   json_init
   json_add_string "jsonrpc" "2.0"
@@ -88,6 +89,7 @@ function wg_rpcd_register {
   json_add_string "" "register"
   json_add_object
   json_add_int "uplink_bw" $uplink_bw
+  json_add_int "mtu" $mtu
   json_add_string "public_key" $public_key
   json_close_object
   json_close_array

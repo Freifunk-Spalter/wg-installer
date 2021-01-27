@@ -30,6 +30,9 @@ while true ; do
     --pubkey)
       PUBKEY=$2
       shift 2
+    --mtu)
+      WG_MTU=$2
+      shift 2
       ;;
     '')
       break
@@ -46,6 +49,6 @@ token="$(request_token $IP $USER $PASSWORD)"
 # now call procedure 
 case $CMD in
   "get_usage") wg_rpcd_get_usage $token $IP;;
-  "register") wg_rpcd_register $token $IP $BANDWIDTH $PUBKEY ;;
+  "register") wg_rpcd_register $token $IP $BANDWIDTH $WG_MTU $PUBKEY ;;
    *) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;"
 esac

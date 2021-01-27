@@ -6,7 +6,7 @@
 case "$1" in
 	list)
 		cmd='{ "get_usage": {},'
-		cmd=$(echo $cmd ' "register": {"uplink_bw":"10", "public_key": "xyz"} }')
+		cmd=$(echo $cmd ' "register": {"uplink_bw":"10", "mtu":"1400", "public_key": "xyz"} }')
 		echo $cmd
 	;;
 	call)
@@ -22,9 +22,10 @@ case "$1" in
 
 				json_load "$input"
   				json_get_var uplink_bw uplink_bw
+				json_get_var mtu mtu
 				json_get_var public_key public_key
 
-				wg_register $uplink_bw $public_key
+				wg_register $uplink_bw $mtu $public_key
 			;;
 		esac
 	;;
