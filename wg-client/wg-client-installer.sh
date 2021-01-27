@@ -40,6 +40,20 @@ while true ; do
   esac
 done
 
+function escape_ip {
+  local gw_ip=$1
+
+  # ipv4 processing
+  ret_ip=$(echo $gw_ip | tr '.' '_')
+	
+	# ipv6 processing
+	ret_ip=$(echo $ret_ip | tr ':' '_')
+	ret_ip=$(echo $ret_ip | cut -d '[' -f 2)
+	ret_ip=$(echo $ret_ip | cut -d ']' -f 1)
+
+  echo $ret_ip
+}
+
 function register_client_interface {
   local pubkey=$1
   local ip_addr=$2
@@ -47,7 +61,8 @@ function register_client_interface {
   local endpoint=$4
 
   gw_key=$(uci get wgclient.@client[0].wg_key)
-  
+  interface_name="gw_$(escape_ip $endpoint)"
+
   # use the 2 as interface ip
   client_ip=$(owipcalc $ip_addr add 2)
   echo "Installing Interface With:"
@@ -56,13 +71,13 @@ function register_client_interface {
   echo "port ${port}"
   echo "pubkey ${pubkey}"
 
-  ip link add dev wg0 type wireguard
+  ip link add dev $interface_name type wireguard
   
   # todo check if ipv6
-  ip -6 a a dev wg0 $client_ip
-  wg set wg0 listen-port $port private-key $gw_key peer $pubkey allowed-ips ::/0 endpoint "${endpoint}:${port}"
-  ip link set up dev wg0
-  ip link set mtu 1372 dev wg0
+  ip -6 a a dev $interface_name $client_ip
+  wg set $interface_name listen-port $port private-key $gw_key peer $pubkey allowed-ips ::/0 endpoint "${endpoint}:${port}"
+  ip link set up dev $interface_name
+  ip link set mtu 1372 dev $interface_name # configure mtu here!
 }
 
 # rpc login
