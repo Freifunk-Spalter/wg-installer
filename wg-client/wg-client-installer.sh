@@ -116,5 +116,5 @@ case $CMD in
 	client_ip=$(echo $register_output | awk '{print $8}')
 	register_client_interface $pubkey $ip_addr $port $IP
 	;;
-*) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller --pubkey xyz ;;" ;;
+*) echo "Usage: wg-client-installer [cmd] --ip [2001::1] --user wginstaller --password wginstaller" ;;
 esac
