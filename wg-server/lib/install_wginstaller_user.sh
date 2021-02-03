@@ -6,7 +6,7 @@
 # install wginstaller user with standard credentials
 # user: wginstaller
 # password: wginstaller
-uci add rpcd login 
+uci add rpcd login
 uci set rpcd.@login[-1].username='wginstaller'
 
 password=$(uhttpd -m wginstaller)
