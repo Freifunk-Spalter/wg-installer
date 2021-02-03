@@ -37,6 +37,9 @@ function request_token {
   json_close_array
   req=$(json_dump)
   ret=$(curl --insecure https://$ip/ubus -d "$req") 2> /dev/null
+  if [ $? != 0 ]; then
+     return 1
+  fi
   json_load "$ret"
   json_get_vars result result
   json_select result
@@ -63,6 +66,10 @@ function wg_rpcd_get_usage {
   json_close_array
   req=$(json_dump)
   ret=$(curl --insecure https://$ip/ubus -d "$req") 2> /dev/null
+  if [ $? != 0 ]; then
+     return 1
+  fi
+
   # return values
   json_load "$ret"
   json_get_vars result result
@@ -95,6 +102,10 @@ function wg_rpcd_register {
   json_close_array
   req=$(json_dump)
   ret=$(curl --insecure https://$ip/ubus -d "$req" 2> /dev/null) 2> /dev/null
+  if [ $? != 0 ]; then
+     return 1
+  fi
+
   json_load "$ret"
   json_get_vars result result
   json_select result

@@ -92,6 +92,10 @@ function register_client_interface {
 
 # rpc login
 token="$(request_token $IP $USER $PASSWORD)"
+if [ $? != 0 ]; then
+   echo "failed to register token" 
+   exit 1
+fi
 
 # now call procedure 
 case $CMD in
@@ -100,9 +104,13 @@ case $CMD in
     wg_rpcd_get_usage $token $IP
     ;;
   "register")
-  	gw_pub=$(uci get wgclient.@client[0].wg_pub)
+    gw_pub=$(uci get wgclient.@client[0].wg_pub)
     gw_pub_string=$(cat $gw_pub)
     register_output=$(wg_rpcd_register $token $IP $BANDWIDTH $WG_MTU $gw_pub_string)
+    if [ $? != 0 ]; then
+      echo "Failed to Register!"
+      exit 1
+    fi
     pubkey=$(echo $register_output | awk '{print $2}')
     ip_addr=$(echo $register_output | awk '{print $4}')
     port=$(echo $register_output | awk '{print $6}')
