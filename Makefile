@@ -69,6 +69,5 @@ define Package/wg-installer-client/install
 	$(INSTALL_CONF) ./wg-client/config/wgclient.conf $(1)/etc/config/wgclient
 endef
 
-$(eval $(call BuildPackage,wg-installer))
 $(eval $(call BuildPackage,wg-installer-server))
 $(eval $(call BuildPackage,wg-installer-client))
