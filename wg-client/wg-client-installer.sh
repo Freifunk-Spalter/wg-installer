@@ -100,7 +100,6 @@ fi
 # now call procedure 
 case $CMD in
   "get_usage")
-    pubkey
     wg_rpcd_get_usage $token $IP
     ;;
   "register")

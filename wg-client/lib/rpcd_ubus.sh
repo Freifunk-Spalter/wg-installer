@@ -101,7 +101,7 @@ function wg_rpcd_register {
   json_close_object
   json_close_array
   req=$(json_dump)
-  ret=$(curl --insecure https://$ip/ubus -d "$req" 2> /dev/null) 2> /dev/null
+  ret=$(curl --insecure https://$ip/ubus -d "$req") 2> /dev/null
   if [ $? != 0 ]; then
      return 1
   fi
